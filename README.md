@@ -1,5 +1,10 @@
 <div align="center">
-  <img src="client/public/devhub-lockup-transparent.png" alt="DevHub" width="280" />
+  <img src="banner.png" alt="DevHub - Developer Analytics" width="100%" />
+</div>
+
+<br/>
+
+<div align="center">
   <p><strong>Open-Source Repository Intelligence & Developer Benchmarking Engine</strong></p>
 </div>
 
