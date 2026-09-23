@@ -9,9 +9,27 @@ import collectionRoutes from './routes/collections.js';
 import systemRoutes from './routes/system.js';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'], credentials: true }));
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:3000',
+  ...(process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',').map(s => s.trim()) : [])
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*') || process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    if (origin.endsWith('.vercel.app') || origin.endsWith('.netlify.app')) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 // Request logging
@@ -43,8 +61,8 @@ async function start() {
   try {
     await initDatabase();
     console.log('Database initialized successfully');
-    app.listen(PORT, () => {
-      console.log(`DevHub server running on http://localhost:${PORT}`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`DevHub server running on port ${PORT}`);
     });
   } catch (err) {
     console.error('Failed to start server:', err);
